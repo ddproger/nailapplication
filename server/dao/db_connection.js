@@ -2,11 +2,10 @@ var mysql = require('mysql');
 
 var con = mysql.createConnection({
   host: "localhost",
+  database: "naildb",
   user: "root",
   password: "qwerty"
 });
-
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
+exports.getConnection = function(){
+  return con;
+}
