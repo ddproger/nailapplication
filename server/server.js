@@ -3,6 +3,8 @@ var express = require('express'),
     methodOverride  = require('method-override'),
     services      = require('./dao/serviceDAO'),
     specialists      = require('./dao/specialistDAO'),
+    orders      = require('./dao/orderDAO'),
+    users      = require('./dao/userDAO'),
     app = express();
 
 app.use(bodyParser.json());
@@ -27,9 +29,13 @@ app.get('/api/specialists', specialists.findAll);
 app.get('/api/specialists/service/:id', specialists.findFromService);
 app.post('/api/specialists/edit/',specialists.update);
 app.get('/api/specialists/view/:id',specialists.findById);
-app.delete('/api/specialists/delete/:id',specialists.delete)
+app.delete('/api/specialists/delete/:id',specialists.delete);
 
+app.get('/api/orders', orders.findAll);
+app.post('/api/order/add',orders.add);
     
+app.get('/api/auth', users.findById);
+
 app.set('port', process.env.PORT || 8080);
 
 app.listen(app.get('port'), function () {

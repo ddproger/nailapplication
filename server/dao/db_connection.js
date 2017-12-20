@@ -11,7 +11,19 @@ exports.getConnection = function(){
 exports.closeConnection=function(connection){
   connection.end(function(err) {
     if (err) {
-      return console.log('error:' + err.message);
+      console.log('error:' + err.message);
     }
   });
+}
+exports.execute=function(sql, callback){
+  var connection = exports.getConnection();  
+  var result = new Object();  
+    connection.connect(function(err) {
+        if (err) return err;        
+      });    
+    connection.query(sql, function (err, result) {
+      if (err) return err;
+      exports.closeConnection(connection);   
+      callback(result);
+    });
 }
