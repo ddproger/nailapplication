@@ -2,6 +2,7 @@ var express = require('express'),
     bodyParser      = require('body-parser'),
     methodOverride  = require('method-override'),
     services      = require('./dao/serviceDAO'),
+    specialists      = require('./dao/specialistDAO'),
     app = express();
 
 app.use(bodyParser.json());
@@ -17,8 +18,19 @@ app.all('*', function(req, res, next) {
     next();
 });
 
-app.get('/services', services.findAll);
-app.set('port', process.env.PORT || 8081);
+app.get('/api/services', services.findAll);
+app.post('/api/service/edit/',services.update);
+app.get('/api/service/view/:id',services.findById);
+app.delete('/api/service/delete/:id',services.delete)
+
+app.get('/api/specialists', specialists.findAll);
+app.get('/api/specialists/service/:id', specialists.findFromService);
+app.post('/api/specialists/edit/',specialists.update);
+app.get('/api/specialists/view/:id',specialists.findById);
+app.delete('/api/specialists/delete/:id',specialists.delete)
+
+    
+app.set('port', process.env.PORT || 8080);
 
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
