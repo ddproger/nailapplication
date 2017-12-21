@@ -1,45 +1,39 @@
 var source = require('./db_connection');
 var mysql = require('mysql');
 exports.findAll = function (req, res) {
-    var connection = source.getConnection();
-    connection.connect(function(err) {
-        if (err) res.send(err);
-        connection.query("SELECT * FROM specialists", function (err, result) {
-            if (err) res.send(err);
-            source.closeConnection(connection);
-            res.send(result);
-          });
-      });    
-      return;
+    var sql ="SELECT * FROM specialists";
+    source.execute(sql, function(returnValue) {
+        res.send(returnValue);
+      }); 
+    return;
 };
 exports.findById = function (req, res) {
     var connection = source.getConnection();    
     var id = req.params.id;
+    if(id){
     var sql = 'SELECT * FROM specialists WHERE id = ' + mysql.escape(id);
-    connection.connect(function(err) {
-        if (err) res.send(err);
-        connection.query(sql, function (err, result) {
-            if (err) res.send(err);
-            source.closeConnection(connection);
-            res.send(result);
-          });
-      });    
-      return;
+    source.execute(sql, function(returnValue) {
+        res.send(returnValue);
+      }); 
+    }else{
+        res.status(400);
+        res.send("");
+    }
+    return;
 };
-exports.update = function (req, res) {
-    var connection = source.getConnection();    
+exports.update = function (req, res) {  
     var id = req.body.id;
     var name = req.body.name;
     var address = req.body.address;
     var tel = req.body.tel;
     var photo = req.body.photo;
-    if(name==null||address==null||tel==null||photo==null){
+    if(!name||!address||!tel||!photo){
         res.status(400);
         res.send("");
         return;
     } 
     var sql;
-    if(id!=null)
+    if(id)
     sql = 'UPDATE specialists SET spec_name='+mysql.escape(name)+
     ', `address`='+mysql.escape(address)+
     ', `telephone`='+mysql.escape(tel)+
@@ -51,40 +45,27 @@ exports.update = function (req, res) {
     +mysql.escape(address)+', '
     +mysql.escape(tel)+', '
     +mysql.escape(photo)+');'
-
-    connection.connect(function(err) {
-        if (err) res.send(err);
-        connection.query(sql, function (err, result) {
-            if (err) res.send(err);
-            source.closeConnection(connection);
-            res.send(result);
-          });
-      });    
-      return;
+    source.execute(sql, function(returnValue) {
+        res.send(returnValue);
+      }); 
+    return;
 }
-exports.delete = function (req, res) {
-    var connection = source.getConnection();    
+exports.delete = function (req, res) {   
     var id = req.params.id;
-    if(id==null){
+    if(!id){
         res.status(400);
         res.send("");
         return;
     } 
     var sql='DELETE FROM specialists WHERE id='+mysql.escape(id);
-    connection.connect(function(err) {
-        if (err) res.send(err);
-        connection.query(sql, function (err, result) {
-            if (err) res.send(err);
-            source.closeConnection(connection);
-            res.send(result);
-          });
-      });    
-      return;
+    source.execute(sql, function(returnValue) {
+        res.send(returnValue);
+    }); 
+    return;
 }
 exports.findFromService = function (req, res) {
-    var connection = source.getConnection();    
     var id = req.params.id;
-    if(id==null){
+    if(!id){
         res.status(400);
         res.send("");
         return;
@@ -98,13 +79,8 @@ exports.findFromService = function (req, res) {
     'join specialists '+
     'on shs.specialist_id = specialists.id '+
     'where shs.service_id='+mysql.escape(id);
-    connection.connect(function(err) {
-        if (err) res.send(err);
-        connection.query(sql, function (err, result) {
-            if (err) res.send(err);
-            source.closeConnection(connection);
-            res.send(result);
-          });
-      });    
-      return;
+    source.execute(sql, function(returnValue) {
+        res.send(returnValue);
+    }); 
+    return;
 }
